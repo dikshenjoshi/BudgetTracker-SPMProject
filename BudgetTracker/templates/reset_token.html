@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Tracker - Reset Password</title>
+    <!--Google Fonts-->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+    <!--Stylesheet-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/CSS/stylesfp.css') }}">
+
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" style="text-align: -webkit-center; margin-bottom: 20px;">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form class="form-container" style="width:40%;" method="POST" action="">
+        {{ form.hidden_tag() }}
+        <h2 style="text-align: center;">Reset Password Form</h2>
+        {% if form.password.errors %}
+            {{ form.password(class="form-control username invalid", placeholder="Password") }}
+            <div class="items">
+                {% for error in form.password.errors %}
+                    <span class="error-tip">{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="items">
+                {{ form.password(class="form-control username", placeholder="Password") }}
+            </div>
+        {% endif %}
+
+        {% if form.re_enter_password.errors %}
+            {{ form.re_enter_password(class="form-control username invalid", placeholder="Re-enter Password") }}
+            <div class="items">
+                {% for error in form.re_enter_password.errors %}
+                    <span class="error-tip">{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="items">
+                {{ form.re_enter_password(class="form-control username", placeholder="Re-enter Password") }}
+            </div>
+        {% endif %}
+        <div class="items">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</body>
+</html>

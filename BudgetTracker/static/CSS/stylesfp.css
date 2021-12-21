@@ -1,0 +1,113 @@
+*,
+*:before,
+*:after{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Poppins",sans-serif;
+}
+body{
+    height: 100vh;
+    background: #ffffff;
+}
+form{
+    background-color: #ffffff;
+    width: 500px;
+    padding: 50px 40px;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    border-radius: 8px;
+    box-shadow: 20px 20px 30px rgba(0,0,0,0.15);
+}
+label{
+    font-weight: 500;
+    color: #101030;
+}
+input{
+    display: block;
+    width: 100%;
+    margin-top: 5px;
+    padding: 12px;
+    border-radius: 5px;
+    outline: none;
+    color: #101010;
+}
+#password{
+    margin-bottom: 30px;
+}
+
+.form-container{
+  margin-top:50px;
+  margin-bottom:50px;
+  background-color: ghostwhite;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%;
+}
+
+.items input[type=text]{
+   
+    background-color: #efefef;
+    border-radius: .5rem;
+    border: 0.125rem solid #ffffff;
+    outline: none;
+    font-size: 1.2rem;
+    padding: 0.8rem;
+}
+
+.items:focus {
+    border: 0.125rem solid #4EA685;
+}
+
+.item input[type=submit]{
+    cursor: pointer;
+    padding: 1rem;
+    border-radius: .5rem;
+    border: none;
+    background-color: #4EA685;
+    color: #ffffff;
+    font-size: 1.2rem;
+    outline: none;
+        margin-right: 10px;
+}
+
+.form-container input[type=text]{
+   
+    background-color: #efefef;
+    border-radius: .5rem;
+    border: 0.125rem solid #ffffff;
+    outline: none;
+    font-size: 1.2rem;
+    padding: 0.8rem;
+}
+
+.form-container input[type=date]{
+   
+    background-color: #efefef;
+    border-radius: .5rem;
+    border: 0.125rem solid #ffffff;
+    outline: none;
+    font-size: 1.2rem;
+    padding: 0.8rem;
+}
+
+.form-container input[type=submit]{
+    cursor: pointer;
+    padding: 1rem;
+    border-radius: .5rem;
+    border: none;
+    background-color: #4EA685;
+    color: #ffffff;
+    font-size: 1.2rem;
+    outline: none;
+        margin-right: 10px;
+}
+p{
+    font-size: 14px;
+    margin: 15px 0;
+    display: inline-block;
+}

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Budget Tracker - Insights</title>
+
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/CSS/styles.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/CSS/styles1.css') }}">
+
+	<!-- For chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+      
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+
+</head>
+<body onload="Javascript:updateChart();">
+	<div class="container">
+	    <div  class="wrapper">
+	        <div class="left-side">
+	        	<div class="link-wrapper">
+	            	<a href="{{ url_for('home') }}">Home</a>
+	        	</div>
+	        	<div class="link-wrapper">
+	          		<a href="{{ url_for('search') }}">Search Expenses</a>
+	        	</div>
+	        	<div class="link-wrapper">
+	          		<a href="{{ url_for('insights') }}">Insights</a>
+	        	</div>
+	        </div>
+	        <div class="dropdown">
+	            <img src="https://d2gg9evh47fn9z.cloudfront.net/800px_COLOURBOX25634105.jpg" style="height: 40px; width: 50px; padding-top: 5px; margin-left: 15px; /* align-self: center; */">
+	            <div class="dropdown-content">
+	                <a href="{{ url_for('logout') }}">Log Out</a>
+	                <a href="#" class="login-trigger" onclick="openForm()">Set Budget</a>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
+	{% with messages = get_flashed_messages(with_categories=true) %}
+	    {% if messages %}
+	        {% for category, message in messages %}
+		        <div class="alert alert-{{category}}">
+		            {{ message }}
+		        </div>
+	        {% endfor %}
+	    {% endif %}
+	{% endwith %}
+
+  <div class="form-popup" id="myForm" style="display:none;">
+    <form class="form-container" method="POST" name= action="">
+      <span class="close" onclick="closeForm()">&times;</span>
+      {{ form.hidden_tag() }}
+      {% if form.budget.errors %}
+        {{ form.budget(class="username form-control invalid", placeholder="Enter Budget", style="margin-bottom:20px;") }}
+        <div>
+          {% for error in form.budget.errors %}
+            <span class="error-tip">{{ error }}</span>
+          {% endfor %}
+        </div>
+      {% else %}
+        {{ form.budget(class="username form-control", placeholder="Enter Budget", style="margin-bottom:20px;") }}
+      {% endif %}
+
+      <div>
+        {{ form.submit(class="btn login") }}
+      </div>
+    </form>
+  </div>
+  <script>
+  function openForm() {
+    document.getElementById("myForm").style.display = "block";
+  }
+  function closeForm() {
+    document.getElementById("myForm").style.display = "none";
+  }
+  </script>
+
+	<div class="con">
+	    <div class="left">
+			<h2>Total Expense</h2>
+			<h2 class="exp">{{ totalSpent }}</h2>
+		</div>
+    <div class="center">
+        <h2>Budget Used</h2>
+        <h1 class="number" id="number" style="text-align: center">{{percentage}}</h1>
+    </div>
+
+    <script>
+          let number=document.getElementById("number");
+          let counter=-1;
+          setInterval(() => {
+          if(counter=='{{ percentage }}'){
+             clearInterval();
+          }
+          else
+          {
+            counter+=1;
+            number.innerHTML=counter+ "%";
+          }
+        },20);
+      </script>
+
+		<div class="right">
+			<h2>Total Income</h2>
+			<h2 class="inc">{{ totalEarned }}</h2>
+		</div>
+	</div>
+
+	<!-- Chart -->
+	 <div class="container" id="curve_chart">
+    <div>
+        <select class="form-control float-right " id="changeTime" onchange="updateChart();" name="changeTime" style="width:120px; height:40px; position: relative; left: 50px">
+            <option value="Month">Current Month</option>
+            <option value="Year">Current Year</option>
+        </select>
+        </div>
+
+        <div>
+            <canvas id="line-chart" width="600" height="400" style="z-index: 10; clear: both; position: relative; margin-left:450px; margin-bottom: 50px"></canvas>
+        </div>
+   </div>
+
+   <div class="dataentry" id="datatable" style="
+          padding-top: 30px;
+          padding-bottom: 50px; display:flex; width:100%;">
+          <table class="scrolldown" style="width:50%;  border: 2px solid LIGHTGRAY; border-radius: 1.5rem;  margin-right: 20px; margin-left: 20px; padding-top: 20px; padding-bottom: 20px; box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; ">
+            <caption><h2>Expense</h2></caption>
+            <tr>
+              <th style="width:55%; text-align: left;">Expense Title</th>
+              <th style="width:15%; text-align: left;">Amount</th>
+              <th style="width:15%; text-align: left;">Date</th>
+              <th style="width:15%; text-align: left;">Time</th>
+            </tr>
+            {% for expense in expenses %}
+              <tr>
+                <td style="text-align: left;"><a href="{{ url_for('transaction', transaction_type='expense', transaction_id=expense.id) }}">{{ expense.title }}</a></td>
+                <td style="text-align: left;"><a href="{{ url_for('transaction', transaction_type='expense', transaction_id=expense.id) }}">{{ expense.amount }}</a></td>
+                <td style="text-align: left;"><a href="{{ url_for('transaction', transaction_type='expense', transaction_id=expense.id) }}">{{ expense.date_posted.date() }}</a></td>
+                <td style="text-align: left;"><a href="{{ url_for('transaction', transaction_type='expense', transaction_id=expense.id) }}">{{ expense.date_posted.replace(microsecond=0).time() }}</a></td>
+              </tr>
+            {% endfor %}
+          </table>
+          <table class="scrolldown" style="width:50%;  border: 2px solid LIGHTGRAY; border-radius: 1.5rem;  margin-right: 20px; margin-left: 20px; padding-top: 20px; padding-bottom: 20px; box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; ">
+            <caption><h2>Income</h2></caption>
+            <tr>
+              <th style="width:55%; text-align: left;">Income Title</th>
+              <th style="width:15%; text-align: left;">Amount</th>
+              <th style="width:15%; text-align: left;">Date</th>
+              <th style="width:15%; text-align: left;">Time</th>
+            </tr>
+            {% for income in incomes %}
+              <tr>
+                <td style="text-align: left;"><a href="{{ url_for('transaction', transaction_type='income', transaction_id=income.id) }}">{{ income.title }}</a></td>
+                <td style="text-align: left;"><a href="{{ url_for('transaction', transaction_type='income', transaction_id=income.id) }}">{{ income.amount }}</a></td>
+                <td style="text-align: left;"><a href="{{ url_for('transaction', transaction_type='income', transaction_id=income.id) }}">{{ income.date_posted.date() }}</a></td>
+                <td style="text-align: left;"><a href="{{ url_for('transaction', transaction_type='income', transaction_id=income.id) }}">{{ income.date_posted.replace(microsecond=0).time() }}</a></td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+
+    <!--<table id="myTable" style="
+           width:50%;  border: 2px solid LIGHTGRAY;
+           border-radius: 6px;  margin-right: 20px;
+           margin-left: 20px; padding-top: 20px;
+           padding-bottom: 20px;     box-shadow: 5px 10px 18px #888888;
+          background-color: antiquewhite; ">
+      <tr class="header">
+        <th style="width:55%;">Expense Title</th>
+        <th style="width:15%;">Amount</th>
+        <th style="width:15%;">Date</th>
+        <th style="width:15%;">Time</th>
+      </tr>
+      {% for income in incomes %}
+        <tr>
+          <td><a href="{{ url_for('transaction', transaction_type='income', transaction_id=income.id) }}">{{ income.title }}</a></td>
+          <td><a href="{{ url_for('transaction', transaction_type='income', transaction_id=income.id) }}">{{ income.amount }}</a></td>
+          <td><a href="{{ url_for('transaction', transaction_type='income', transaction_id=income.id) }}">{{ income.date_posted.date() }}</a></td>
+          <td><a href="{{ url_for('transaction', transaction_type='income', transaction_id=income.id) }}">{{ income.date_posted.replace(microsecond=0).time() }}</a></td>
+        </tr>
+      {% endfor %}
+    </table>
+    <table id="myTable" style="
+           width:50%;  border: 2px solid LIGHTGRAY;
+           border-radius: 6px;  margin-right: 20px;
+           margin-left: 20px; padding-top: 20px;
+           padding-bottom: 20px;     box-shadow: 5px 10px 18px #888888;
+          background-color: antiquewhite; ">
+      <tr class="header">
+        <th style="width:55%;">Expense Title</th>
+        <th style="width:15%;">Amount</th>
+        <th style="width:15%;">Date</th>
+        <th style="width:15%;">Time</th>
+      </tr>
+      {% for expense in expenses %}
+        <tr>
+          <td><a href="{{ url_for('transaction', transaction_type='expense', transaction_id=expense.id) }}">{{ expense.title }}</a></td>
+          <td><a href="{{ url_for('transaction', transaction_type='expense', transaction_id=expense.id) }}">{{ expense.amount }}</a></td>
+          <td><a href="{{ url_for('transaction', transaction_type='expense', transaction_id=expense.id) }}">{{ expense.date_posted.date() }}</a></td>
+          <td><a href="{{ url_for('transaction', transaction_type='expense', transaction_id=expense.id) }}">{{ expense.date_posted.replace(microsecond=0).time() }}</a></td>
+        </tr>
+      {% endfor %}
+    </table>-->
+
+	<script>
+        var myData = {
+        'Month': {
+            data: [
+              {% for item in monthlyData %}
+                '{{ item[0] }}',
+              {% endfor %}
+            ],
+            label: "Total Spent",
+            backgroundColor: [
+              {% for item in monthlyData %}
+                getRandomColorHex(),
+              {% endfor %}
+            ],
+            borderWidth: 1
+          },
+        'Year': {
+            data: [
+              {% for item in yearlyData %}
+                '{{ item[0] }}',
+              {% endfor %}
+            ],
+            label: "Total Spent",
+            backgroundColor: [
+              {% for item in monthlyData %}
+                getRandomColorHex(),
+              {% endfor %}
+            ],
+            borderWidth: 1
+          }
+        }
+
+        var myLabel = {
+        'Month': {
+            data: [
+              {% for item in monthlyData %}
+                '{{ item[1] }}',
+              {% endfor %}
+            ]
+          },
+        'Year': {
+            data: [
+              {% for item in yearlyData %}
+                '{{ item[1] }}',
+              {% endfor %}
+            ]
+          }
+        }
+
+        var myLineChart;
+
+        function updateChart() {
+        var ctx = document.getElementById("line-chart");
+        var e = document.getElementById("changeTime");
+        // Getting the selected value of dropdown
+        var dd = e.options[e.selectedIndex].value;
+        // Creating dataset
+        if (dd=="Month"){
+          var transactionData = {
+              labels: [
+              {% for item in monthlyData %}
+                '{{ item[1] }}',
+              {% endfor %}
+              ],
+              datasets: [myData[dd]]
+          }
+        }
+        else{
+          var transactionData = {
+              labels: [
+              {% for item in yearlyData %}
+                '{{ item[1] }}',
+              {% endfor %}
+              ],
+              datasets: [myData[dd]]
+          }
+        }
+        // Clearing chart before assiging new dataset
+        if (myLineChart != undefined) {
+            myLineChart.clear();
+            myLineChart.destroy();
+        }
+
+        myLineChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: transactionData.labels,
+                datasets: transactionData.datasets
+            },
+            options: {
+              responsive: false,
+              title: {
+                  display: true,
+                  text: "Current "+dd+" Data"
+              },
+              scales: {
+                yAxes: [
+                  {
+                    scaleLabel: {
+                      display: true,
+                      labelString: "Rs",
+                    },
+                  },
+                ],
+                xAxes: [
+                  {
+                    scaleLabel: {
+                      display: true,
+                      labelString: "Date",
+                    },
+                  },
+                ],
+              }
+            }
+          }
+        );
+        // Updating the chart after the  data is set.
+        myLineChart.update();
+        }
+
+        function getRandomColorHex() {
+	        var hex = "0123456789ABCDEF",
+	            color = "#";
+	        for (var i = 1; i <= 6; i++) {
+	          color += hex[Math.floor(Math.random() * 16)];
+	        }
+	        return color;
+        }
+    </script>
+
+</body>
+</html>

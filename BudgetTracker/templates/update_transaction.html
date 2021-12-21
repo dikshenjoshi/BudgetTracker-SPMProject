@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/CSS/styles.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/CSS/stylesfp.css') }}">
+  
+  <title>Budget Tracker - Update Transaction</title>
+
+</head>
+<body>
+  <div class="container">
+    <div  class="wrapper">
+      <div class="left-side">
+        <div class="link-wrapper">
+          <a href="{{ url_for('home') }}">Home</a>
+        </div>
+        <div class="link-wrapper">
+          <a href="{{ url_for('search') }}">Search Expenses</a>
+        </div>
+        <div class="link-wrapper">
+          <a href="{{ url_for('insights') }}">Insights</a>
+        </div>
+
+      </div>
+
+      <div class="dropdown">
+         <img src="https://d2gg9evh47fn9z.cloudfront.net/800px_COLOURBOX25634105.jpg" style="height: 40px; width: 50px; padding-top: 5px; margin-left: 15px; /* align-self: center; */">
+            <div class="dropdown-content">
+              <a href="{{ url_for('logout') }}">Log Out</a>
+              <a href="#" class="login-trigger" onclick="openForm()">Set Budget</a>
+            </div>
+      </div>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}" style="text-align: -webkit-center;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="form-popup" id="myForm" style="display:none;">
+    <form class="form-container" method="POST" name= action="?form=form1">
+      <span class="close" onclick="closeForm()">&times;</span>
+      {{ form1.hidden_tag() }}
+      {% if form1.budget.errors %}
+        {{ form1.budget(class="username form-control invalid", placeholder="Enter Budget", style="margin-bottom:20px;") }}
+        <div>
+          {% for error in form1.budget.errors %}
+            <span class="error-tip">{{ error }}</span>
+          {% endfor %}
+        </div>
+      {% else %}
+        {{ form1.budget(class="username form-control", placeholder="Enter Budget", style="margin-bottom:20px;") }}
+      {% endif %}
+
+      <div>
+        {{ form1.submit(class="btn login") }}
+      </div>
+    </form>
+  </div>
+  <script>
+  function openForm() {
+    document.getElementById("myForm").style.display = "block";
+  }
+  function closeForm() {
+    document.getElementById("myForm").style.display = "none";
+  }
+  </script>
+
+  <form class="form-container" style="width:40%" method="POST" action="">
+        {{ form.hidden_tag() }}
+        <h2 style="text-align:center">Transaction Update Form</h2>
+        
+        {% if form.title.errors %}
+            <div class="items">
+              {{ form.title(class="form-control username invalid", placeholder="Transaction Name") }}
+                {% for error in form.title.errors %}
+                    <span class="error-tip">{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="items">
+              {{ form.title(class="form-control username", placeholder="Transaction Name") }}
+            </div>
+        {% endif %}
+
+        {% if form.amount.errors %}
+            <div class="items">
+              {{ form.amount(class="form-control username invalid", placeholder="Amount") }}
+                {% for error in form.amount.errors %}
+                    <span class="error-tip">{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="items">
+              {{ form.amount(class="form-control username", placeholder="Amount") }}
+            </div>
+        {% endif %}
+
+        {% if transaction_type=='income' %}
+            <div class="items">
+              {{ form.incomeUpdate(class="btn btn-outline-info") }}
+            </div>
+        {% else %}
+            <div class="items">
+              {{ form.expenseUpdate(class="btn btn-outline-info") }}
+            <div class="items">
+        {% endif %}
+    </form>
+
+    <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</body>
+</html>

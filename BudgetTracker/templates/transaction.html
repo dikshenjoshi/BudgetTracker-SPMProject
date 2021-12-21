@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/CSS/styles.css') }}">
+
+  
+  <title>Budget Tracker - Transaction details</title>
+
+</head>
+
+<body>
+  <div class="container">
+    <div  class="wrapper">
+      <div class="left-side">
+        <div class="link-wrapper">
+          <a href="{{ url_for('home') }}">Home</a>
+        </div>
+        <div class="link-wrapper">
+          <a href="{{ url_for('search') }}">Search Expenses</a>
+        </div>
+        <div class="link-wrapper">
+          <a href="{{ url_for('insights') }}">Insights</a>
+        </div>
+
+      </div>
+
+      <div class="dropdown">
+         <img src="https://d2gg9evh47fn9z.cloudfront.net/800px_COLOURBOX25634105.jpg" style="height: 40px; width: 50px; padding-top: 5px; margin-left: 15px;/* align-self: center; */">
+            <div class="dropdown-content">
+              <a href="{{ url_for('logout') }}">Log Out</a>
+              <a href="#" class="login-trigger" onclick="openForm()">Set Budget</a>
+            </div>
+      </div>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}" style="text-align: -webkit-center; margin-bottom: 20px;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="form-popup" id="myForm" style="display:none;">
+    <form class="form-container" method="POST" name= action="?form=form1">
+      <span class="close" onclick="closeForm()">&times;</span>
+      {{ form1.hidden_tag() }}
+      {% if form1.budget.errors %}
+        {{ form1.budget(class="username form-control invalid", placeholder="Enter Budget", style="margin-bottom:20px;") }}
+        <div>
+          {% for error in form1.budget.errors %}
+            <span class="error-tip">{{ error }}</span>
+          {% endfor %}
+        </div>
+      {% else %}
+        {{ form1.budget(class="username form-control", placeholder="Enter Budget", style="margin-bottom:20px;") }}
+      {% endif %}
+
+      <div>
+        {{ form1.submit(class="btn login") }}
+      </div>
+    </form>
+  </div>
+  <script>
+  function openForm() {
+    document.getElementById("myForm").style.display = "block";
+  }
+  function closeForm() {
+    document.getElementById("myForm").style.display = "none";
+  }
+  </script>
+
+  <div class="form-container">
+    <h2 style="text-align: -webkit-center;">Transaction Type - {{ transaction_type }}</h2>
+    <p style="text-align: -webkit-center; margin-bottom: 20px;">Date: {{ transaction.date_posted.date() }}</p>
+    <p style="text-align: -webkit-center; margin-bottom: 20px;">Time: {{ transaction.date_posted.replace(microsecond=0).time() }}</p>
+    <h3 style="text-align: -webkit-center;">Title: {{ transaction.title }}</h3>
+    <h4 style="text-align: -webkit-center; margin-bottom: 20px;">Amount: {{ transaction.amount }}</h4>
+    <div style="text-align: -webkit-center; margin-bottom: 20px;">
+      <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('update_transaction', transaction_type=transaction_type, transaction_id=transaction.id) }}">Update</a>
+      <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>
+    </div>
+  </div>
+  <!-- Modal -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Are you sure you want to Delete this transaction?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <form action="{{ url_for('delete_transaction', transaction_type=transaction_type, transaction_id=transaction.id) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Delete">
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</body>
+</html>

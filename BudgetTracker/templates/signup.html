@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>BudgetTracker - Sign-up Page</title>
+  
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/CSS/style.css') }}">
+
+  <!-- For Ajax and getting timestamp-->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script rel="javascript" type="text/javascript" href="js/jquery-1.11.3.min.js"></script>
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div id="container" class="container">
+	<!-- FORM SECTION -->
+	<div class="row">
+		<!-- SIGN IN -->
+		<div class="col align-items-center flex-col sign-up">
+			<div class="form-wrapper align-items-center">
+				<div class="form sign-up">
+					<form method="POST" action="">
+						{{ form.hidden_tag() }}
+						<div class="input-group">
+							<i class='bx bxs-user'></i>
+							{% if form.first_name.errors %}
+								{{ form.first_name(class="field invalid", placeholder="First Name") }}
+								<div>
+									{% for error in form.first_name.errors %}
+										<span class="error-tip">{{ error }}</span>
+									{% endfor %}
+								</div>
+							{% else %}
+								{{ form.first_name(class="field", placeholder="First Name") }}
+							{% endif %}
+				        </div>
+						<div class="input-group">
+							<i class='bx bxs-user'></i>
+							{% if form.last_name.errors %}
+								{{ form.last_name(class="field invalid", placeholder="Last Name") }}
+								<div>
+									{% for error in form.last_name.errors %}
+										<span class="error-tip">{{ error }}</span>
+									{% endfor %}
+								</div>
+							{% else %}
+								{{ form.last_name(class="field", placeholder="Last Name") }}
+							{% endif %}
+						</div>
+						<div class="input-group">
+							<i class='bx bx-mail-send'></i>
+							{% if form.email.errors %}
+								{{ form.email(class="field invalid", placeholder="Email") }}
+								<div>
+									{% for error in form.email.errors %}
+										<span class="error-tip">{{ error }}</span>
+									{% endfor %}
+								</div>
+							{% else %}
+								{{ form.email(class="field", placeholder="Email") }}
+							{% endif %}
+						</div>
+						<div class="input-group">
+							<i class='bx bxs-lock-alt'></i>
+							{% if form.password.errors %}
+								{{ form.password(class="field invalid", placeholder="Password") }}
+								<div>
+									{% for error in form.password.errors %}
+										<span class="error-tip">{{ error }}</span>
+									{% endfor %}
+								</div>
+							{% else %}
+								{{ form.password(class="field", placeholder="Password") }}
+							{% endif %}
+						</div>
+						<div class="input-group">
+							<i class='bx bxs-lock-alt'></i>
+							{% if form.re_enter_password.errors %}
+								{{ form.re_enter_password(class="field invalid", placeholder="Re-enter Password") }}
+								<div>
+									{% for error in form.re_enter_password.errors %}
+										<span class="error-tip">{{ error }}</span>
+									{% endfor %}
+								</div>
+							{% else %}
+								{{ form.re_enter_password(class="field", placeholder="Re-enter Password") }}
+							{% endif %}
+						</div>
+						<div>
+							{{ form.submit(class="submit") }}
+					    </div>
+					</form>
+					<p>
+						<span>
+							Already have an account? 
+						</span>
+						<b class="pointer">
+							<a class="ml-2" href="{{ url_for('login') }}">Login here</a>
+						</b>
+					</p>
+				</div>
+			</div>
+		</div>
+		<!-- END SIGN IN -->
+		<div class="col align-items-center flex-col sign-in">
+		</div>
+	</div>
+	<!-- END FORM SECTION -->
+	<!-- CONTENT SECTION -->
+	<div class="row content-row">
+		<!-- LOGIN CONTENT -->
+		<div class="col align-items-center flex-col">
+		</div>
+		<div class="col align-items-center flex-col">
+			<div class="img sign-up">
+			</div>
+			<div class="text sign-up">
+				<h2>
+					Join with us
+				</h2>
+			</div>
+		</div>
+		<!-- END LOGIN CONTENT -->
+	</div>
+	<!-- END CONTENT SECTION -->
+</div>
+	<script src="{{url_for('static', filename='/Javascript/script2.js')}}"></script>
+
+	<script type="text/javascript">
+    var timeOffsetInMS = new Date().getTimezoneOffset() * 60000;
+    var mydata={'offset': timeOffsetInMS};
+
+    $.ajax({
+      type: 'POST',
+      url: '/setOffset',
+      data: JSON.stringify (mydata),
+      success: function(data) { alert('data: ' + data); },
+      contentType: "application/json",
+      dataType: 'json'
+    });
+  </script>
+
+</body>
+</html>

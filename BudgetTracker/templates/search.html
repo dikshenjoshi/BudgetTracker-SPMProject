@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"/>
+	<title>Budget Tracker - Search Transaction</title>
+
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/CSS/styles.css') }}">
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+#myInput {
+  background-image: url('/css/searchicon.png');
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+  margin-top:20px;
+}
+
+#myTable {
+  border-collapse: collapse;
+  width: 60%;
+  border: 1px solid #ddd;
+  font-size: 18px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#myTable th, #myTable td {
+  text-align: left;
+  padding: 12px;
+}
+
+#myTable tr {
+  border-bottom: 1px solid #ddd;
+}
+
+#myTable tr.header, #myTable tr:hover {
+  background-color: #f1f1f1;
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <div  class="wrapper">
+      <div class="left-side">
+        <div class="link-wrapper">
+          <a href="{{ url_for('home') }}">Home</a>
+        </div>
+        <div class="link-wrapper">
+          <a href="{{ url_for('search') }}">Search Expenses</a>
+        </div>
+        <div class="link-wrapper">
+          <a href="{{ url_for('insights') }}">Insights</a>
+        </div>
+      </div>
+      <div class="dropdown">
+         <img src="https://d2gg9evh47fn9z.cloudfront.net/800px_COLOURBOX25634105.jpg" style="height: 40px; width: 50px; padding-top: 5px; margin-left: 15px; /* align-self: center; */">
+            <div class="dropdown-content">
+              <a href="{{ url_for('logout') }}">Log Out</a>
+              <a href="#" class="login-trigger" onclick="openForm()">Set Budget</a>
+            </div>
+      </div>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{category}}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="form-popup" id="myForm" style="display:none;">
+    <form class="form-container" method="POST" name="navbar-form" action="?form=form1">
+      <span class="close" onclick="closeForm()">&times;</span>
+      {{ form.hidden_tag() }}
+      {% if form1.budget.errors %}
+        {{ form1.budget(class="username form-control invalid", placeholder="Enter Budget", style="margin-bottom:20px;") }}
+        <div>
+          {% for error in form1.budget.errors %}
+            <span class="error-tip">{{ error }}</span>
+          {% endfor %}
+        </div>
+      {% else %}
+        {{ form1.budget(class="username form-control", placeholder="Enter Budget", style="margin-bottom:20px;") }}
+      {% endif %}
+
+      <div>
+        {{ form1.submit(class="btn login") }}
+      </div>
+    </form>
+  </div>
+  <script>
+  function openForm() {
+    document.getElementById("myForm").style.display = "block";
+  }
+  function closeForm() {
+    document.getElementById("myForm").style.display = "none";
+  }
+  </script>
+
+  <div class="con" style="background-color: white; height: 100%;">
+    <div class="section2">
+      <form class="form-container" action="?form=form?" name="myform" method="POST" style="text-align: center; padding-top: 50px; padding-bottom: 50px;  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; border-radius: 1.5rem;">
+        {{ form.hidden_tag() }}
+        <div class="item">
+          {% if form.date.errors %}
+            {{ form.date(class="username form-control invalid", placeholder="Transaction Name") }}
+            <div>
+              {% for error in form.date.errors %}
+                <span class="error-tip">{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.date(class="username form-control", placeholder="Transaction Name") }}
+          {% endif %}
+        </div><br />     
+        <div class="item">
+          {{ form.submit(class="btn login") }}
+        </div>
+      </form>
+    </div>
+    {% if len!=0 %}
+      <table id="myTable">
+        <tr class="header">
+          <th style="width:55%;">Expense Title</th>
+          <th style="width:15%;">Amount</th>
+          <th style="width:15%;">Date</th>
+          <th style="width:15%;">Time</th>
+        </tr>
+        {% for expense in listOfExpenses %}
+          <tr>
+            <td><a href="{{ url_for('transaction', transaction_type='expense', transaction_id=expense.id) }}">{{ expense.title }}</a></td>
+            <td><a href="{{ url_for('transaction', transaction_type='expense', transaction_id=expense.id) }}">{{ expense.amount }}</a></td>
+            <td><a href="{{ url_for('transaction', transaction_type='expense', transaction_id=expense.id) }}">{{ expense.date_posted.date() }}</a></td>
+            <td><a href="{{ url_for('transaction', transaction_type='expense', transaction_id=expense.id) }}">{{ expense.date_posted.replace(microsecond=0).time() }}</a></td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% endif %}
+  </div>
+</body>
+</html>

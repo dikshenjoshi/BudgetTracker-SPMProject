@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Tracker - Reset Password</title>
+    
+    <!--Google Fonts-->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!--Stylesheet-->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/CSS/stylesfp.css') }}">
+
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" style="text-align: -webkit-center; margin-bottom: 20px;">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form class="form-container" method="POST" action="">
+        {{ form.hidden_tag() }}
+        <h2 style="margin-bottom: 20px; text-align: center;">Forgot Your Password?</h2>
+        <p>That's okay,it happens! Enter Your Registered Email Below</p>
+        
+        {% if form.email.errors %}
+            {{ form.email(class="field invalid", placeholder="Email") }}
+            <div>
+                {% for error in form.email.errors %}
+                    <span class="error-tip">{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            {{ form.email(class="field", placeholder="Email") }}
+        {% endif %}
+
+        {{ form.submit(class="btn btn-outline-info") }}
+    </form>
+   
+</body>
+</html>
